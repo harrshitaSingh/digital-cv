@@ -3,7 +3,7 @@ import "./styled.css";
 import CustomInput from "../../Components/CustomInput";
 import CustomButton from "../../Components/CustomButton";
 import { useNavigate } from "react-router-dom";
-import { Typography } from "@mui/material";
+import { colors, Typography } from "@mui/material";
 
 function SignUpPage() {
   const [name, setName] = useState("");
@@ -61,7 +61,12 @@ function SignUpPage() {
       >
         <img src="signUp.jpeg" alt="login" className="photo" />
         <div className="signUpBox">
-          <h1>Sign Up</h1>
+          <Typography
+            variant="h3"
+            sx={{ fontWeight: "bold", color: "#4b2354", m: 3 }}
+          >
+            SIGN UP
+          </Typography>
           <form className="signUpForm">
             <div className="inputGrp">
               <CustomInput
@@ -97,10 +102,11 @@ function SignUpPage() {
             </div>
             <CustomButton
               btnStyles={{
-                backgroundColor: "#b53f6c",
+                backgroundColor: "#4b2354",
                 border: "none",
                 color: "white",
                 cursor: "pointer",
+                margin: 4,
               }}
               btnText="Create Account"
               updateClick={handleLogin}

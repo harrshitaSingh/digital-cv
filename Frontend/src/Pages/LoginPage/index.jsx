@@ -83,7 +83,12 @@ function LoginPage() {
             width: "400px",
           }}
         >
-          <h1 style={{ textAlign: "center", marginBottom: "20px" }}>Log In</h1>
+          <Typography
+            variant="h3"
+            sx={{ fontWeight: "bold", color: "#4b2354", m: 3, textAlign:'center' }}
+          >
+            LOG IN
+          </Typography>{" "}
           <form className="loginForm">
             <div className="inputGrp">
               <CustomInput
@@ -111,7 +116,7 @@ function LoginPage() {
             >
               <CustomButton
                 btnStyles={{
-                  backgroundColor: "#b53f6c",
+                  backgroundColor: "#4b2354",
                   border: "none",
                   color: "white",
                   cursor: "pointer",
