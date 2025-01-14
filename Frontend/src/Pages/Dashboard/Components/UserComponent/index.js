@@ -17,7 +17,7 @@ const UserComponent = () => {
     const navigate = useNavigate();
 
   const handleAvatarClick = () => {
-    setShowDropdown((prev) => !prev); // Toggle the dropdown visibility
+    setShowDropdown((prev) => !prev);
   };
 
 const handleDropdownChange = (event) => {

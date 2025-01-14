@@ -22,6 +22,7 @@ import CustomInput from "../../Components/CustomInput";
 import { ResumeContext } from "../../Context/ResumeContext/index,";
 import Sidebar from "./Components/Sidebar";
 import UserComponent from "./Components/UserComponent";
+import { useNavigate } from "react-router-dom";
 
 const drawerWidth = 240;
 
@@ -67,6 +68,8 @@ export default function DetailPage() {
     value: resume.id,
   }));
 
+  const navigate = useNavigate();
+
   const handleModal = () => {
     const selectedResume = resumes.find((resume) => resume.id === 1);
     if (selectedResume) {
@@ -92,6 +95,10 @@ export default function DetailPage() {
       );
     }
     setOpenModalState(!openModalState);
+  };
+
+  const handleSave = () => {
+    navigate("/review");
   };
 
   return (
@@ -310,7 +317,9 @@ export default function DetailPage() {
                       backgroundColor: "#4b2354",
                       border: "none",
                       color: "white",
+                      cursor: "pointer",
                     }}
+                    updateClick={handleSave}
                   />
                 </Grid>
               </Grid>

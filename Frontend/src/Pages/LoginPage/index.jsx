@@ -85,7 +85,12 @@ function LoginPage() {
         >
           <Typography
             variant="h3"
-            sx={{ fontWeight: "bold", color: "#4b2354", m: 3, textAlign:'center' }}
+            sx={{
+              fontWeight: "bold",
+              color: "#4b2354",
+              m: 3,
+              textAlign: "center",
+            }}
           >
             LOG IN
           </Typography>{" "}
