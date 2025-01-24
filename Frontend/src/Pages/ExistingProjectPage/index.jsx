@@ -210,7 +210,6 @@ function ExistingProj() {
                       }}
                       updateClick={handleAdd}
                     />{" "}
-                    \
                   </Grid>
                 </Grid>
               </Box>
