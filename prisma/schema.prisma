@@ -14,10 +14,11 @@ model User {
   id    Int     @id @default(autoincrement())
   email String  @unique
   name  String?
-  posts Post[]
+  password String?
+  posts Resume[]
 }
 
-model Post {
+model Resume {
   id        Int     @id @default(autoincrement())
   title     String
   content   String?
