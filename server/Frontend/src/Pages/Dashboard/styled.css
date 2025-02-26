@@ -1,0 +1,59 @@
+.headForm{
+    text-align: center;
+    font-weight: normal;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.nameIdx{
+    text-align: center;
+}
+
+.addProjForm {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+    background-color: #f0f0f0;
+  padding: 20px;
+  border-radius: 10px; 
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1); 
+}
+
+.inputGrp input {
+  width: 300px;
+  padding: 10px;
+  margin-bottom: 15px;
+}
+
+.addBtn {
+  padding: 10px 20px;
+  background-color: #3f51b5;
+  color: white;
+  border: none;
+  cursor: pointer;
+  width: 150px;
+}
+
+.userDetails{
+  display: flex;
+  justify-content: flex-end;
+}
+
+.logOutBtn{
+  background: none;
+    color: white;
+    border: none;
+    padding: 10px;
+    border-radius: 10px;
+    width: 3vw;
+}
+
+.details{
+  display: flex;
+  justify-content: space-around;
+}
+
