@@ -3,7 +3,7 @@ import "./styled.css";
 import CustomInput from "../../Components/CustomInput";
 import CustomButton from "../../Components/CustomButton";
 import { useNavigate } from "react-router-dom";
-import { colors, Typography } from "@mui/material";
+import { Typography } from "@mui/material";
 
 function SignUpPage() {
   const [name, setName] = useState("");
@@ -12,20 +12,48 @@ function SignUpPage() {
   const [confirmPassword, setConfirmPassword] = useState("");
   const navigate = useNavigate();
 
-  const handleLogin = (e) => {
-    if (
-      name === "" ||
-      email === "" ||
-      password === "" ||
-      confirmPassword === ""
-    ) {
-      alert("Details must be filled out");
-      // return;
-    } else {
-      localStorage.setItem("name", name);
-      localStorage.setItem("email", email);
-      localStorage.setItem("password", password);
-      navigate("/");
+  const handleSignUp = async (e) => {
+    if (e && e.preventDefault) {
+      e.preventDefault();
+    }
+
+    if (!name || !email || !password || !confirmPassword) {
+      alert("All fields must be filled out");
+      return;
+    }
+
+    if (password !== confirmPassword) {
+      alert("Passwords do not match");
+      return;
+    }
+
+    try {
+      const response = await fetch("http://localhost:5000/signUp", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ name, email, password }),
+      });
+
+      const data = await response.json();
+      console.log(data,);
+
+      if (response.ok) {
+        alert("Account created successfully!");
+        if (data) {
+          localStorage.setItem("user", data);
+          navigate("/");
+        } else {
+          alert("Token not received. Please try again.");
+        }
+        navigate("/");
+      } else {
+        alert(data.error);
+      }
+    } catch (error) {
+      console.error("Signup error:", error);
+      alert("Failed to create an account. Please try again.");
     }
   };
 
@@ -59,7 +87,7 @@ function SignUpPage() {
           justifyContent: "space-around",
         }}
       >
-        <img src="signUp.jpeg" alt="login" className="photo" />
+        <img src="signUp.jpeg" alt="signup" className="photo" />
         <div className="signUpBox">
           <Typography
             variant="h3"
@@ -67,14 +95,14 @@ function SignUpPage() {
           >
             SIGN UP
           </Typography>
-          <form className="signUpForm">
+          <form className="signUpForm" onSubmit={handleSignUp}>
             <div className="inputGrp">
               <CustomInput
                 inputType="text"
                 label="Enter your name"
                 currentValue={name}
                 updateValue={setName}
-              ></CustomInput>
+              />
             </div>
             <div className="inputGrp">
               <CustomInput
@@ -82,7 +110,7 @@ function SignUpPage() {
                 label="Enter your email"
                 currentValue={email}
                 updateValue={setEmail}
-              ></CustomInput>
+              />
             </div>
             <div className="inputGrp">
               <CustomInput
@@ -90,7 +118,7 @@ function SignUpPage() {
                 label="New password"
                 currentValue={password}
                 updateValue={setPassword}
-              ></CustomInput>
+              />
             </div>
             <div className="inputGrp">
               <CustomInput
@@ -98,7 +126,7 @@ function SignUpPage() {
                 label="Confirm password"
                 currentValue={confirmPassword}
                 updateValue={setConfirmPassword}
-              ></CustomInput>
+              />
             </div>
             <CustomButton
               btnStyles={{
@@ -109,7 +137,7 @@ function SignUpPage() {
                 margin: 4,
               }}
               btnText="Create Account"
-              updateClick={handleLogin}
+              updateClick={handleSignUp}
             />
           </form>
         </div>

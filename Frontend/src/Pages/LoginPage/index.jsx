@@ -9,29 +9,51 @@ import { Typography } from "@mui/material";
 function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const { setUserState, setAdminState } = useContext(UserContext);
+  const { userState, setUserState, setAdminState } = useContext(UserContext);
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
 
-  const handleLogin = (e) => {
-    if (email === "" || password === "") {
+  const handleLogin = async (e) => {
+    console.log("i am here");
+    if (e && e.preventDefault) {
+      e.preventDefault();
+    }
+
+    if (!email || !password) {
       alert("Details must be filled out");
       return;
     }
 
-    const storedEmail = localStorage.getItem("email");
-    const storedPassword = localStorage.getItem("password");
+    try {
+      const response = await fetch("http://localhost:5000", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email, password }),
+      });
 
-    if (storedEmail === email && storedPassword === password) {
-      if (email === "harshita@gmail.com" && password === "Harshita") {
-        setAdminState("Admin Logged In");
-        navigate("/adminPage");
-      } else {
-        setUserState("User Logged In");
-        navigate("/yourProj");
+      const data = await response.json().catch(() => null);
+
+      if (!data) {
+        alert("Unexpected error. Please try again.");
+        return;
       }
-    } else {
-      alert("User does not exist! Kindly create an account");
-      return;
+      setLoading(true);
+      if (response.ok) {
+        setUserState(data.user);
+        // localStorage.setItem("user", JSON.stringify(data.user));
+        console.log(userState, "userState");
+
+        navigate("/yourProj");
+      } else {
+        alert(data.error);
+      }
+    } catch (error) {
+      console.error("Login error:", error);
+      alert("Failed to login to your account. Please try again.");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -94,7 +116,7 @@ function LoginPage() {
           >
             LOG IN
           </Typography>{" "}
-          <form className="loginForm">
+          <form className="loginForm" onSubmit={handleLogin}>
             <div className="inputGrp">
               <CustomInput
                 inputType="email"
@@ -127,8 +149,9 @@ function LoginPage() {
                   cursor: "pointer",
                 }}
                 btnText="Submit"
-                updateClick={handleLogin}
+                updateClick={(e) => handleLogin(e)}
               />
+
               <Link to="/signUp">
                 <CustomButton
                   btnStyles={{
