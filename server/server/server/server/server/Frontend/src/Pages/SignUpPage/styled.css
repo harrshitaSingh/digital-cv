@@ -1,0 +1,30 @@
+.signUp {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  height: 100vh;
+  background-color: #e09a9a3b;
+text-align: center;
+}
+
+.signUpBox {
+  padding: 30px;
+  border-radius: 8px;
+  width: 300px;
+}
+
+h1 {
+  text-align: center;
+  margin-bottom: 20px;
+
+}
+
+.photo {
+  height: 300px;
+  width: 400px;
+}
+
+.inputGrp {
+  margin-bottom: 15px;
+}
+
