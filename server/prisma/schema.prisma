@@ -19,10 +19,16 @@ model User {
 }
 
 model Resume {
-  id        Int     @id @default(autoincrement())
-  title     String
-  content   String?
-  published Boolean @default(false)
-  author    User    @relation(fields: [authorId], references: [id])
-  authorId  Int
+  id           Int      @id @default(autoincrement())
+  title        String
+  experience   Json
+  education    Json
+  certificates Json
+  contact      Json
+  project      Json
+  github       String
+  linkedin     String
+  authorId     Int      @map("user_id")
+
+  User User @relation(fields: [authorId], references: [id])
 }

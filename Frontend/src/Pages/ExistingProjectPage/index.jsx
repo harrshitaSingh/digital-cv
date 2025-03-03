@@ -24,7 +24,7 @@ import UserComponent from "../Dashboard/Components/UserComponent";
  * @description This component represents a dashboard page to manage existing projects and add new resumes.
  */
 function ExistingProj() {
-  const { resumes, setResumes } = useContext(ResumeContext); // Destructure setResumes
+  const { resumes, setResumes } = useContext(ResumeContext);
   const [newResume, setNewResume] = useState({ name: "" });
   const [addModal, setAddModal] = useState(false);
   const navigate = useNavigate();
@@ -36,26 +36,48 @@ function ExistingProj() {
   /**
    * Handle adding a new resume.
    */
-  const handleAdd = () => {
-    const newId = resumes.length ? resumes[resumes.length - 1].id + 1 : 1;
-    const newResumeEntry = {
-      id: newId,
-      name: newResume.name,
-      experience: [],
-      education: [],
-      projects: [],
-      certifications: [],
-      github: "",
-      linkedin: "",
-    };
+  const handleAdd = async () => {
+    if (!newResume.name.trim()) return;
 
-    setResumes((prevResumes) => [...prevResumes, newResumeEntry]);
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) {
+        alert("Unauthorized! Please log in.");
+        return;
+      }
 
-    localStorage.setItem("newResumeName", newResume.name);
+      const response = await fetch("http://localhost:5000/resume/yourProj", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          title: newResume.name,
+          experience: [],
+          education: [],
+          certificates: [],
+          contact: [],
+          project: [],
+          github: "",
+          linkedin: "",
+        }),
+      });
 
-    setAddModal(false);
-    setNewResume({ name: "" });
-    navigate("/addDetails");
+      const data = await response.json();
+      if (!response.ok) {
+        throw new Error(data.message || "Something went wrong");
+      }
+
+      setResumes((prevResumes) => [...prevResumes, data.data]);
+
+      setAddModal(false);
+      setNewResume({ name: "" });
+      navigate("/addDetails");
+    } catch (error) {
+      console.error("Error adding resume:", error);
+      alert("Failed to add resume");
+    }
   };
 
   return (

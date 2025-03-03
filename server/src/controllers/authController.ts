@@ -1,10 +1,13 @@
-import prisma from "../config/db";
+import prisma from "../Config/db";
 import jwt from "jsonwebtoken";
+import { signUpModel } from "../Models/signUp.model";
+import { loginModel } from "../Models/logIn.model";
+import { Request, Response } from "express";
 
-export const signUp = async (req: { body: { name: any; email: any; password: any; }; }, res: { status: (arg0: number) => { (): any; new(): any; json: { (arg0: { error?: string; token?: never; }): void; new(): any; }; }; }) => {
+export const signUp = async (req: Request<{}, {}, signUpModel>, res: Response) => {
   const { name, email, password } = req.body;
 
-  if (!name || !email || !password) {
+ if (!name || !email || !password) {
     return res.status(400).json({ error: "All fields are required" });
   }
 
@@ -15,11 +18,12 @@ export const signUp = async (req: { body: { name: any; email: any; password: any
       return res.status(400).json({ error: "User already exists" });
     }
 
+
     const newUser = await prisma.user.create({
       data: {
         name,
         email,
-        password,
+        password
       },
     });
 
@@ -36,7 +40,9 @@ export const signUp = async (req: { body: { name: any; email: any; password: any
   }
 };
 
-export const login = async (req: { body: { email: any; password: any; }; }, res: { status: (arg0: number) => { (): any; new(): any; json: { (arg0: { error?: string; message?: string; user?: any; }): void; new(): any; }; }; }) => {
+export const login = async (
+req: Request<{}, {}, loginModel>, res: Response
+) => {
   const { email, password } = req.body;
 
   if (!email || !password) {

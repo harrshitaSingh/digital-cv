@@ -1,21 +1,9 @@
-import prisma from "../config/db";
+import { Request, Response } from "express";
 import jwt from "jsonwebtoken";
+import prisma from "../Config/db";
+import { ResumeModal } from "../Models/resume.model";
 
-interface Resume {
-  title: string;
-  experience: string[];
-  education: string[];
-  certificates: string[];
-  contact: string[];
-  project: string[];
-  github: string;
-  linkedin: string;
-}
-
-export const createResume = async (
-  req: { header: (arg0: string) => string; body: Resume },
-  res: any
-) => {
+export const createResume = async (req: Request, res: Response) => {
   try {
     const token = req.header("Authorization")?.split(" ")[1];
     if (!token) {
@@ -25,15 +13,12 @@ export const createResume = async (
       });
     }
 
-    const decodedUserId = jwt.verify(token, process.env.JWT_SECRET!) as {
-      userId: number;
-    };
-
-    if (!decodedUserId) {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET) as { userId: number };
+    if (!decoded || !decoded.userId) {
       return res.status(401).json({ success: false, message: "Invalid token" });
     }
 
-    const resumeId = decodedUserId.userId;
+    const authorId = decoded.userId;
 
     const {
       title,
@@ -44,7 +29,11 @@ export const createResume = async (
       project,
       github,
       linkedin,
-    }: Resume = req.body;
+    }: ResumeModal = req.body;
+
+    if (!title || !experience || !education || !contact || !project) {
+      return res.status(400).json({ success: false, message: "Missing required fields" });
+    }
 
     const newResume = await prisma.resume.create({
       data: {
@@ -56,7 +45,7 @@ export const createResume = async (
         project,
         github,
         linkedin,
-        authorId: resumeId,
+        authorId,
       },
     });
 
