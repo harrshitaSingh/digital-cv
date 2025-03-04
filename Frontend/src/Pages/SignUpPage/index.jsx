@@ -18,7 +18,7 @@ const handleSignUp = async (e) => {
   }
 
   if (!name || !email || !password || !confirmPassword) {
-    alert("All fields must be filled out");
+    alert('All fields must be filled out');
     return;
   }
   
