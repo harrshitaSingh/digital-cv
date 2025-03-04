@@ -1,5 +1,5 @@
 
-  export interface ResumeModal {
+  export interface ResumeModel {
     title: string;
     experience: string[];
     education: string[];

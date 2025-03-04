@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import "./styled.css";
 import {
   Box,
@@ -42,7 +42,25 @@ export default function DetailPage() {
   const [link, setLink] = useState(" ");
   const { resumes } = useContext(ResumeContext);
   const [selectResume, setSelectResume] = useState("");
+  const [userNameFromLocal, setUserNameFromLocal] = useState("")
+  const [resumeData, setResumeData]=useState("")
 
+
+    useEffect(() => {
+    const storedUser = localStorage.getItem("user");
+    const parseJwt = (storedUser) => {
+      try {
+        return JSON.parse(atob(storedUser.split(".")[1]));
+      } catch (e) {
+        return null;
+      }
+    };
+    const userName = parseJwt(storedUser);
+    setUserNameFromLocal(userName)
+      const storedResume = JSON.parse(localStorage.getItem("resume"))
+      setResumeData(storedResume)
+  }, []);
+  
   const sideBarField = {
     Education: <EducationForm resumeId={1} />,
     Experience: <ExperienceForm resumeId={1} />,
@@ -52,7 +70,7 @@ export default function DetailPage() {
     Contact: <ContactForm resumeId={1} />,
   };
 
-  const userNameFromLocal = localStorage.getItem("name");
+
   const output = [
     "Contact",
     "Experience",
@@ -196,7 +214,7 @@ export default function DetailPage() {
                       fontWeight: "bold",
                     }}
                   >
-                    {userNameFromLocal}
+                    {userNameFromLocal.name}
                   </Typography>
                 </Grid>
 

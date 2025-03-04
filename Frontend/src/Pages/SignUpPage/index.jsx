@@ -12,50 +12,45 @@ function SignUpPage() {
   const [confirmPassword, setConfirmPassword] = useState("");
   const navigate = useNavigate();
 
-  const handleSignUp = async (e) => {
-    if (e && e.preventDefault) {
-      e.preventDefault();
+const handleSignUp = async (e) => {
+  if (e && e.preventDefault) {
+    e.preventDefault();
+  }
+
+  if (!name || !email || !password || !confirmPassword) {
+    alert("All fields must be filled out");
+    return;
+  }
+  
+  if (password !== confirmPassword) {
+    alert("Passwords do not match");
+    return;
+  }
+
+  try {
+    const response = await fetch("http://localhost:5000/auth/signUp", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ name, email, password }),
+    });
+
+    const data = await response.json();
+
+    if (response.ok) {
+      alert("Account created successfully!");
+      localStorage.setItem("user", data.token);
+      navigate("/");
+    } else {
+      alert(data.error);
     }
+  } catch (error) {
+    console.error("Signup error:", error);
+    alert("Failed to create an account. Please try again.");
+  }
+};
 
-    if (!name || !email || !password || !confirmPassword) {
-      alert("All fields must be filled out");
-      return;
-    }
-
-    if (password !== confirmPassword) {
-      alert("Passwords do not match");
-      return;
-    }
-
-    try {
-      const response = await fetch("http://localhost:5000/auth/signUp", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ name, email, password }),
-      });
-
-      const data = await response.json();
-      console.log(data,);
-
-      if (response.ok) {
-        alert("Account created successfully!");
-        if (data) {
-          localStorage.setItem("user", data);
-          navigate("/");
-        } else {
-          alert("Token not received. Please try again.");
-        }
-        navigate("/");
-      } else {
-        alert(data.error);
-      }
-    } catch (error) {
-      console.error("Signup error:", error);
-      alert("Failed to create an account. Please try again.");
-    }
-  };
 
   return (
     <div
@@ -137,7 +132,6 @@ function SignUpPage() {
                 margin: 4,
               }}
               btnText="Create Account"
-              updateClick={handleSignUp}
             />
           </form>
         </div>

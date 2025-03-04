@@ -36,49 +36,56 @@ function ExistingProj() {
   /**
    * Handle adding a new resume.
    */
-  const handleAdd = async () => {
-    if (!newResume.name.trim()) return;
+const handleAdd = async () => {
+  try {
+    const token = localStorage.getItem("user");
+    const cleanToken = JSON.parse(token)
+    console.log(cleanToken, "val of token")
+    if (!cleanToken) {
+      alert("Unauthorized! Please log in.");
+      return;
+    }
 
+    const response = await fetch("http://localhost:5000/resume/yourProj", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${cleanToken}`,
+      },
+      body: JSON.stringify({
+        title: newResume.name,
+        experience: [],
+        education: [],
+        certificates: [],
+        contact: [],
+        project: [],
+        github: "",
+        linkedin: "",
+      }),
+    });
+
+    const text = await response.text();
     try {
-      const token = localStorage.getItem("token");
-      if (!token) {
-        alert("Unauthorized! Please log in.");
-        return;
-      }
-
-      const response = await fetch("http://localhost:5000/resume/yourProj", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({
-          title: newResume.name,
-          experience: [],
-          education: [],
-          certificates: [],
-          contact: [],
-          project: [],
-          github: "",
-          linkedin: "",
-        }),
-      });
-
-      const data = await response.json();
+      const data = JSON.parse(text);
       if (!response.ok) {
         throw new Error(data.message || "Something went wrong");
       }
 
       setResumes((prevResumes) => [...prevResumes, data.data]);
-
       setAddModal(false);
       setNewResume({ name: "" });
+      localStorage.setItem("resume", JSON.stringify(data))
       navigate("/addDetails");
-    } catch (error) {
-      console.error("Error adding resume:", error);
-      alert("Failed to add resume");
+    } catch (parseError) {
+      console.error("Response is not valid JSON:", text);
+      alert("Server response is not valid JSON. Check console for details.");
     }
-  };
+  } catch (error) {
+    console.error("Error adding resume:", error);
+    alert("Failed to add resume");
+  }
+};
+
 
   return (
     <Box sx={{ display: "flex" }}>
@@ -170,7 +177,7 @@ function ExistingProj() {
                   component="div"
                   sx={{ color: "#4b2354", textAlign: "center" }}
                 >
-                  {resume.name}
+                  {resume.title}
                 </Typography>
                 <Typography sx={{ mb: 1.5 }} color="text.secondary">
                   Manage your existing projects or create a new one

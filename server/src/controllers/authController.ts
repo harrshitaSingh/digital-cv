@@ -7,7 +7,7 @@ import { Request, Response } from "express";
 export const signUp = async (req: Request<{}, {}, signUpModel>, res: Response) => {
   const { name, email, password } = req.body;
 
- if (!name || !email || !password) {
+  if (!name || !email || !password) {
     return res.status(400).json({ error: "All fields are required" });
   }
 
@@ -18,27 +18,27 @@ export const signUp = async (req: Request<{}, {}, signUpModel>, res: Response) =
       return res.status(400).json({ error: "User already exists" });
     }
 
-
     const newUser = await prisma.user.create({
       data: {
         name,
         email,
-        password
+        password,
       },
     });
 
     const token = jwt.sign(
       { userId: newUser.id, name: newUser.name, email: newUser.email },
-      process.env.JWT_SECRET,
+      process.env.JWT_SECRET!,
       { expiresIn: "1hr" }
     );
 
-    res.status(201).json({ token });
+    return res.status(201).json({ token });
   } catch (error) {
     console.error("Error creating user:", error);
-    res.status(500).json({ error: "Something went wrong" });
+    return res.status(500).json({ error: "Something went wrong, please try again." });
   }
 };
+
 
 export const login = async (
 req: Request<{}, {}, loginModel>, res: Response

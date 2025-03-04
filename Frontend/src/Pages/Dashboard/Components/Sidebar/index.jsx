@@ -6,7 +6,10 @@ const drawerWidth = 240;
 
 const Sidebar = ({ selectedSection, setSelectedSection, handleModal, output }) => {
 
-    const getResumeName = localStorage.getItem('newResumeName')
+  const getResumeName = JSON.parse(localStorage.getItem('resume'));
+
+
+  
     return (
       <Drawer
         sx={{
@@ -31,7 +34,7 @@ const Sidebar = ({ selectedSection, setSelectedSection, handleModal, output }) =
               textTransform: "uppercase",
             }}
           >
-            {getResumeName}
+            {getResumeName?.data?.title}
           </Typography>
         </Box>
         <Divider />

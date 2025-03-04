@@ -14,7 +14,6 @@ function LoginPage() {
   const [loading, setLoading] = useState(false);
 
   const handleLogin = async (e) => {
-    console.log("i am here");
     if (e && e.preventDefault) {
       e.preventDefault();
     }
@@ -42,7 +41,7 @@ function LoginPage() {
       setLoading(true);
       if (response.ok) {
         setUserState(data.user);
-        // localStorage.setItem("user", JSON.stringify(data.user));
+        // localStorage.setItem("token", JSON.stringify(token));
         console.log(userState, "userState");
 
         navigate("/yourProj");

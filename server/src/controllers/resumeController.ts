@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import jwt from "jsonwebtoken";
 import prisma from "../Config/db";
-import { ResumeModal } from "../Models/resume.model";
+import { ResumeModel } from "../Models/resume.model";
 
 export const createResume = async (req: Request, res: Response) => {
   try {
@@ -29,7 +29,7 @@ export const createResume = async (req: Request, res: Response) => {
       project,
       github,
       linkedin,
-    }: ResumeModal = req.body;
+    }: ResumeModel = req.body;
 
     if (!title || !experience || !education || !contact || !project) {
       return res.status(400).json({ success: false, message: "Missing required fields" });
