@@ -13,48 +13,41 @@ function LoginPage() {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
 
-  const handleLogin = async (e) => {
-    if (e && e.preventDefault) {
-      e.preventDefault();
+ const handleLogin = async (e) => {
+  if (e && e.preventDefault) {
+    e.preventDefault();
+  }
+
+  if (!email || !password) {
+    alert("Details must be filled out");
+    return;
+  }
+
+  try {
+    const response = await fetch("http://localhost:5000/auth", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ email, password }),
+    });
+
+    const data = await response.json();
+    console.log("Login response:", data); // Debugging
+
+    if (response.ok) {
+      setUserState(data.user);
+      localStorage.setItem("token", data.user.token); // Store the token correctly
+      navigate("/yourProj");
+    } else {
+      alert(data.error);
     }
+  } catch (error) {
+    console.error("Login error:", error);
+    alert("Failed to login. Please try again.");
+  }
+};
 
-    if (!email || !password) {
-      alert("Details must be filled out");
-      return;
-    }
-
-    try {
-      const response = await fetch("http://localhost:5000/auth", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ email, password }),
-      });
-
-      const data = await response.json().catch(() => null);
-
-      if (!data) {
-        alert("Unexpected error. Please try again.");
-        return;
-      }
-      setLoading(true);
-      if (response.ok) {
-        setUserState(data.user);
-        // localStorage.setItem("token", JSON.stringify(token));
-        console.log(userState, "userState");
-
-        navigate("/yourProj");
-      } else {
-        alert(data.error);
-      }
-    } catch (error) {
-      console.error("Login error:", error);
-      alert("Failed to login to your account. Please try again.");
-    } finally {
-      setLoading(false);
-    }
-  };
 
   return (
     <div

@@ -11,15 +11,16 @@ datasource db {
 }
 
 model User {
-  id    Int     @id @default(autoincrement())
-  email String  @unique
-  name  String?
+  id       Int      @id @default(autoincrement())
+  email    String   @unique
+  name     String?
   password String?
-  posts Resume[]
+  token    String?
+  posts    Resume[]
 }
 
 model Resume {
-  id           Int      @id @default(autoincrement())
+  id           Int    @id @default(autoincrement())
   title        String
   experience   Json
   education    Json
@@ -28,7 +29,7 @@ model Resume {
   project      Json
   github       String
   linkedin     String
-  authorId     Int      @map("user_id")
+  authorId     Int    @map("user_id")
 
   User User @relation(fields: [authorId], references: [id])
 }

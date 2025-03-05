@@ -40,7 +40,6 @@ const handleSignUp = async (e) => {
 
     if (response.ok) {
       alert("Account created successfully!");
-      localStorage.setItem("user", data.token);
       navigate("/");
     } else {
       alert(data.error);

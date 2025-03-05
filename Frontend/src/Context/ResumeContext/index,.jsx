@@ -1,57 +1,81 @@
 import { createContext, useEffect, useState } from "react";
 
-import resumeData from "../../../src/Configs/ResumConfig/config.json";
-
 export const ResumeContext = createContext();
 
-//Add comments Here
+/**
+ * @name decodeToken
+ * @description Decodes a JWT token to extract the payload.
+ * @param {string} token - The JWT token.
+ * @returns {object|null} - Decoded token data or null if invalid.
+ */
+const decodeToken = (token) => {
+    try {
+        return JSON.parse(atob(token.split(".")[1]));
+    } catch (error) {
+        console.error("Invalid token:", error);
+        return null;
+    }
+};
 
 const ResumeProvider = ({ children }) => {
     const [resumes, setResumes] = useState([]);
-    const [loading , setLoading] = useState(false)
+    const [loading, setLoading] = useState(false);
 
     /**
      * @name fetchResume
-     * @description Fetches All the user resumes
-     *
-     * @returns {Array} The resume data Array.
+     * @description Fetches resumes that match the logged-in user's ID
      */
-    function fetchResume() {
-        return resumeData;
-    }
+    const fetchResume = async () => {
+        const token = localStorage.getItem("token");
+        const userId = token ? decodeToken(token)?.id : null;
+
+        if (!userId) {
+            console.error("No userId found");
+            return;
+        }
+
+        setLoading(true);
+        try {
+            const response = await fetch("http://localhost:5000/resume/yourProj", {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+
+            const data = await response.json();
+            setResumes(data);
+        } catch (error) {
+            console.error("Error fetching resumes:", error);
+        } finally {
+            setLoading(false);
+        }
+    };
 
     useEffect(() => {
-        const fetchResumeData = fetchResume();
-        setResumes(fetchResumeData);
-    }, []);
+        fetchResume();
+    }, []); 
 
-
-    // Add comments here
+    /**
+     * @name updateResume
+     * @description Updates a specific resume field by ID
+     * @param {string} resumeId - ID of the resume to update
+     * @param {string} field - The field to update
+     * @param {any} value - The new value for the field
+     */
     const updateResume = (resumeId, field, value) => {
-        const clonedResume = structuredClone(resumes); // read about this 
-
-        const updatedResume = clonedResume.map((resume) =>
+        const updatedResume = resumes.map((resume) =>
             resume.id === resumeId ? { ...resume, [field]: value } : resume
         );
-
         setResumes(updatedResume);
     };
 
-
-    // Add comments
-    // const AddResume = () => {
-
-    // }
-
-    // Add comments 
-    // const deleteResume = () => { 
-        
-    // }
-
     return (
-        <ResumeContext.Provider value={{ resumes, updateResume, setResumes, loading , setLoading }}>
+        <ResumeContext.Provider value={{ resumes, updateResume, setResumes, loading, setLoading }}>
             {children}
         </ResumeContext.Provider>
     );
 };
+
 export default ResumeProvider;

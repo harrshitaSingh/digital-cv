@@ -1,9 +1,9 @@
-import { Request, Response } from "express";
-import jwt from "jsonwebtoken";
-import prisma from "../Config/db";
-import { ResumeModel } from "../Models/resume.model";
+  import { Request, Response } from "express";
+  import jwt from "jsonwebtoken";
+  import prisma from "../Config/db";
+  import { ResumeModel } from "../Models/resume.model";
 
-export const createResume = async (req: Request, res: Response) => {
+ export const createResume = async (req: Request, res: Response) => {
   try {
     const token = req.header("Authorization")?.split(" ")[1];
     if (!token) {
@@ -13,12 +13,14 @@ export const createResume = async (req: Request, res: Response) => {
       });
     }
 
-    const decoded = jwt.verify(token, process.env.JWT_SECRET) as { userId: number };
-    if (!decoded || !decoded.userId) {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET) as { id: number };
+    console.log("Decoded Token:", decoded); // Debugging line to check if id exists
+
+    if (!decoded || !decoded.id) {
       return res.status(401).json({ success: false, message: "Invalid token" });
     }
 
-    const authorId = decoded.userId;
+    const authorId = decoded.id;
 
     const {
       title,
@@ -55,3 +57,26 @@ export const createResume = async (req: Request, res: Response) => {
     res.status(500).json({ success: false, message: "Internal Server Error" });
   }
 };
+
+export const getResumes = async (req: Request, res: Response) => {
+    try {
+        const token = req.header("Authorization")?.split(" ")[1];
+        if (!token) {
+            return res.status(401).json({ success: false, message: "Unauthorized" });
+        }
+
+        const decoded = jwt.verify(token, process.env.JWT_SECRET) as { id: number };
+        if (!decoded || !decoded.id) {
+            return res.status(401).json({ success: false, message: "Invalid token" });
+        }
+
+        const authorId = decoded.id; 
+        const resumes = await prisma.resume.findMany({ where: { authorId } });
+
+        res.json(resumes);
+    } catch (error) {
+        console.error("Error fetching resumes:", error);
+        res.status(500).json({ success: false, message: "Internal Server Error" });
+    }
+};
+

@@ -6,7 +6,7 @@ const CustomAvatar = ({ margin = "20px auto", avatarStyles, onClick }) => {
   const [name, setName] = useState("");
 
   useEffect(() => {
-    const storedUser = localStorage.getItem("user");
+    const storedUser = localStorage.getItem("token");
     const parseJwt = (storedUser) => {
       try {
         return JSON.parse(atob(storedUser.split(".")[1]));
@@ -16,7 +16,6 @@ const CustomAvatar = ({ margin = "20px auto", avatarStyles, onClick }) => {
     };
 
     const userData = parseJwt(storedUser);
-    console.log("Decoded Token Data:", userData);
 
     if (userData && userData.name) {
       setName(userData.name);

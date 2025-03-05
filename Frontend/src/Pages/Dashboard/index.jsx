@@ -47,7 +47,7 @@ export default function DetailPage() {
 
 
     useEffect(() => {
-    const storedUser = localStorage.getItem("user");
+    const storedUser = localStorage.getItem("token");
     const parseJwt = (storedUser) => {
       try {
         return JSON.parse(atob(storedUser.split(".")[1]));

@@ -4,15 +4,15 @@ export const UserContext = createContext();
 
 export const UserProvider = ({ children }) => {
   const [userState, setUserState] = useState(() => {
-    const storedUser = localStorage.getItem("user");
+    const storedUser = localStorage.getItem("token");
     return storedUser 
   });
 
   useEffect(() => {
     if (userState) {
-      localStorage.setItem("user", JSON.stringify(userState));
+      localStorage.setItem("token", userState);
     } else {
-      localStorage.removeItem("user");
+      localStorage.removeItem("token");
     }
   }, [userState]);
 

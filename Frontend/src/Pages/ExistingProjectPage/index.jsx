@@ -36,55 +36,55 @@ function ExistingProj() {
   /**
    * Handle adding a new resume.
    */
-const handleAdd = async () => {
-  try {
-    const token = localStorage.getItem("user");
-    const cleanToken = JSON.parse(token)
-    console.log(cleanToken, "val of token")
-    if (!cleanToken) {
-      alert("Unauthorized! Please log in.");
-      return;
-    }
-
-    const response = await fetch("http://localhost:5000/resume/yourProj", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${cleanToken}`,
-      },
-      body: JSON.stringify({
-        title: newResume.name,
-        experience: [],
-        education: [],
-        certificates: [],
-        contact: [],
-        project: [],
-        github: "",
-        linkedin: "",
-      }),
-    });
-
-    const text = await response.text();
+  const handleAdd = async () => {
     try {
-      const data = JSON.parse(text);
-      if (!response.ok) {
-        throw new Error(data.message || "Something went wrong");
+      const token = localStorage.getItem("token");
+      console.log("Token being sent:", token); 
+
+      if (!token) {
+        alert("Unauthorized! Please log in.");
+        return;
       }
 
-      setResumes((prevResumes) => [...prevResumes, data.data]);
-      setAddModal(false);
-      setNewResume({ name: "" });
-      localStorage.setItem("resume", JSON.stringify(data))
-      navigate("/addDetails");
-    } catch (parseError) {
-      console.error("Response is not valid JSON:", text);
-      alert("Server response is not valid JSON. Check console for details.");
+      const response = await fetch("http://localhost:5000/resume/yourProj", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          title: newResume.name,
+          experience: [],
+          education: [],
+          certificates: [],
+          contact: [],
+          project: [],
+          github: "",
+          linkedin: "",
+        }),
+      });
+
+      const text = await response.text();
+      try {
+        const data = JSON.parse(text);
+        if (!response.ok) {
+          throw new Error(data.message || "Something went wrong");
+        }
+
+        setResumes((prevResumes) => [...prevResumes, data.data]);
+        setAddModal(false);
+        setNewResume({ name: "" });
+        localStorage.setItem("resume", JSON.stringify(data))
+        navigate("/addDetails");
+      } catch (parseError) {
+        console.error("Response is not valid JSON:", text);
+        alert("Server response is not valid JSON. Check console for details.");
+      }
+    } catch (error) {
+      console.error("Error adding resume:", error);
+      alert("Failed to add resume");
     }
-  } catch (error) {
-    console.error("Error adding resume:", error);
-    alert("Failed to add resume");
-  }
-};
+  };
 
 
   return (
